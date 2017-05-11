@@ -1,22 +1,31 @@
 /* jshint esversion: 6 */
+
 /**
  * [description]
  * @return {[type]} [description]
  */
-yang = function(){
+let Yang = function(){
 
 };
+Yang.prototype = {
 
-yang.prototype = {
-
-  constructor: yang,
+  constructor: Yang,
 
   ajax (url, settings) {
-    // If url is an object...
+
+    // If url is an object as settings...
     if( typeof url === 'object' ){
       settings = url;
-      url = settings.url ? settings.url : undefined;
+      url = settings.url || null;
     }
+
+    // settings must be an Object
+    settings = settings || {};
+    settings.headers = settings.headers || {};
+
+    settings.method = settings.method || settings.type || 'GET';
+
+    // console.log(url, settings);
 
     let yangXHRPromise = new Promise( (resolve, reject) => {
       // instance a XMLHttpRequest Object
@@ -24,11 +33,11 @@ yang.prototype = {
 
       //
       xhr.open(
-        settings.type,
-				settings.url,
-				settings.async,
-				settings.username,
-				settings.password
+        settings.method,
+				url,
+				settings.async !== undefined ? settings.async : true ,
+				settings.username || null ,
+				settings.password || null
       );
 
       // Override mime type if needed
@@ -36,11 +45,28 @@ yang.prototype = {
         xhr.overrideMimeType( settings.mimetype );
       }
 
+      //
+      if( typeof settings.contentType === 'string' ){
+        settings.headers['Content-Type'] = settings.contentType;
+      }
+      else{
+        settings.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+      }
+      delete settings.contentType;
+
+      // Set the Accepts header for the server, depending on the dataType
+      if( typeof settings.dataType === 'string' ){
+        settings.headers.accept = settings.dataType;
+      }
+      delete settings.dataType;
+
       // sets the value of an HTTP request header
       if( typeof settings.headers === 'object' ){
         let headers = settings.headers;
-        for ( let header in headers )
-          xhr.setRequestHeader( header, headers[header] );
+        for ( let header in headers ){
+          console.log( header, headers[header] );
+          xhr.setRequestHeader( header.toLowerCase(), headers[header] );
+        }
       }
 
       // timeout property is an unsigned long representing the number of milliseconds
@@ -54,15 +80,41 @@ yang.prototype = {
       // The progress event is fired to indicate that an upload or download is in progress.
       if( typeof settings.progress === 'object' ){
         if( typeof settings.progress.uploadProgress === 'function' ){
-          xhr.upload.addEventListener('progress', uploadProgress(e));
+          xhr.upload.addEventListener('progress', settings.progress.uploadProgress);
         }
         if( typeof settings.progress.downloadProgress === 'function' ){
-          xhr.addEventListener('progress', downloadProgress(e));
+          xhr.addEventListener('progress', settings.progress.downloadProgress);
         }
       }
 
-      //
-    });
+      // An EventHandler that is called whenever the readyState attribute changes.
+      xhr.onreadystatechange = () => {
+        if ( xhr.readyState === 4 ){
+          if( xhr.status>=200 && xhr.status<=299 ){
+            resolve( xhr );
+          }
+          else{
+            reject( xhr );
+          }
+        }
+      };
 
+      // send the request
+      try{
+        // Do send the request (this may raise an exception)
+        xhr.send( settings.data || null );
+      }
+      catch (error) {
+        reject(error);
+      }
+
+    });
+    return yangXHRPromise;
   }
 };
+
+/**
+ * [yang description]
+ * @type {Yang}
+ */
+var yang = new Yang();
