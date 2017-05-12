@@ -1,0 +1,22 @@
+{
+  "name": "yangjs",
+  "version": "0.0.2",
+  "description": "yangholmes' front-end toolkit.",
+  "main": "yang.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yangholmes/yangjs.git"
+  },
+  "keywords": [
+    "yangjs"
+  ],
+  "author": "yangholmes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yangholmes/yangjs/issues"
+  },
+  "homepage": "https://github.com/Yangholmes/yangjs#readme"
+}

@@ -1,6 +1,12 @@
 /* jshint esversion: 6 */
 
 /**
+ * usage
+ * in browser: use tag to import <script src="ajax.js"></script>
+ * in babel: import { yang } from 'ajax.js';
+ */
+
+/**
  * [description]
  * @return {[type]} [description]
  */
@@ -11,30 +17,37 @@ Yang.prototype = {
 
   constructor: Yang,
 
+  /**
+   * [ajax description]
+   * @param  {[String]} url      [description]
+   * @param  {[Object]} settings [description]
+   * @return {[Promise}]}          [description]
+   */
   ajax (url, settings) {
 
     // If url is an object as settings...
     if( typeof url === 'object' ){
       settings = url;
-      url = settings.url || null;
+      url = settings.url;
     }
 
     // settings must be an Object
     settings = settings || {};
     settings.headers = settings.headers || {};
 
+    settings.url = settings.url || url || null;
     settings.method = settings.method || settings.type || 'GET';
 
     // console.log(url, settings);
 
-    let yangXHRPromise = new Promise( (resolve, reject) => {
+    return new Promise( (resolve, reject) => {
       // instance a XMLHttpRequest Object
       let xhr = new XMLHttpRequest();
 
       //
       xhr.open(
         settings.method,
-				url,
+				settings.url,
 				settings.async !== undefined ? settings.async : true ,
 				settings.username || null ,
 				settings.password || null
@@ -109,7 +122,6 @@ Yang.prototype = {
       }
 
     });
-    return yangXHRPromise;
   }
 };
 
@@ -118,3 +130,4 @@ Yang.prototype = {
  * @type {Yang}
  */
 var yang = new Yang();
+export { yang };
