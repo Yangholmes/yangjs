@@ -10,7 +10,7 @@
  * [description]
  * @return {[type]} [description]
  */
-let Yang = function(){
+var Yang = function(){
 
 };
 Yang.prototype = {
@@ -130,4 +130,6 @@ Yang.prototype = {
  * @type {Yang}
  */
 var yang = new Yang();
-export { yang };
+// export { yang }; // ES6
+
+module.exports = Yang; // CommonJS

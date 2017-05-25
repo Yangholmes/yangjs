@@ -1,6 +1,6 @@
 {
   "name": "yangjs",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "yangholmes' front-end toolkit.",
   "main": "yang.js",
   "scripts": {
